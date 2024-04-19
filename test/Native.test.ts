@@ -2,19 +2,9 @@ import {
   time,
   loadFixture,
 } from "@nomicfoundation/hardhat-toolbox/network-helpers";
-import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
 import { expect } from "chai";
 import hre from "hardhat";
-
-function generateRandomHexString(length: number) {
-  let result = "";
-  const characters = "0123456789abcdef";
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-}
+import { generateRandomHexString } from "./common";
 
 const timeout = 600;
 // How much should A fix in the contract
@@ -25,7 +15,7 @@ const amountB = 10000;
 // A swaps 1000 native tokens of network A for 10000 native tokens of network B
 describe("Cross-Chain Atomic Swap Native Tokens", function () {
   async function deployA() {
-    const [partyA, partyB, partyC] = await hre.ethers.getSigners();
+    const [partyA, partyB] = await hre.ethers.getSigners();
 
     // A and B chose a single exchange time
     const deadline = (await time.latest()) + timeout;
@@ -36,7 +26,7 @@ describe("Cross-Chain Atomic Swap Native Tokens", function () {
 
     // A created a contract by fixing the time of execution
     // Also the tokens are locked with key A
-    const NativeA = await hre.ethers.getContractFactory("Native", {
+    const NativeA = await hre.ethers.getContractFactory("NativeSwap", {
       signer: partyA,
     });
     const nativeA = await NativeA.deploy(partyB.address, deadline, hashKeyA, {
@@ -55,7 +45,7 @@ describe("Cross-Chain Atomic Swap Native Tokens", function () {
 
     // B created a contract by fixing the time of execution
 
-    const NativeB = await hre.ethers.getContractFactory("Native", {
+    const NativeB = await hre.ethers.getContractFactory("NativeSwap", {
       signer: partyB,
     });
     const nativeB = await NativeB.deploy(partyA.address, deadline, hashKeyA, {

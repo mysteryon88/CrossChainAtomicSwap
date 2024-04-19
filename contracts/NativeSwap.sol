@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-contract Native {
+contract NativeSwap {
     address public immutable owner;
     address public immutable otherParty;
     uint public immutable deadline;
