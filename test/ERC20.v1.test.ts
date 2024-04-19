@@ -36,9 +36,12 @@ describe("Cross-Chain Atomic Swap ERC20 Tokens v1", function () {
 
     // A created a contract by fixing the time of execution
     // Also the tokens are locked with key A
-    const ERC20A = await hre.ethers.getContractFactory("AtomicERC20SwapV1", {
-      signer: partyA,
-    });
+    const ERC20A = await hre.ethers.getContractFactory(
+      "ERC20SwapTransferFrom",
+      {
+        signer: partyA,
+      }
+    );
     const erc20A = await ERC20A.deploy(tokenA, partyB, deadline, hashKeyA);
 
     // A transferred the tokens to the contract
@@ -66,9 +69,12 @@ describe("Cross-Chain Atomic Swap ERC20 Tokens v1", function () {
     // where tokens are locked with key A
 
     // B created a contract by fixing the time of execution
-    const ERC20B = await hre.ethers.getContractFactory("AtomicERC20SwapV1", {
-      signer: partyB,
-    });
+    const ERC20B = await hre.ethers.getContractFactory(
+      "ERC20SwapTransferFrom",
+      {
+        signer: partyB,
+      }
+    );
     const erc20B = await ERC20B.deploy(tokenB, partyA, deadline, hashKeyA);
 
     // B transferred the tokens to the contract

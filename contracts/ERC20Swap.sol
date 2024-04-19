@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
 interface IERC20 {
     function transfer(address to, uint256 amount) external returns (bool);
@@ -41,7 +41,7 @@ contract AtomicERC20Swap {
     }
 
     function withdrawal() external {
-        require(block.timestamp > deadline, "Swap not yet expired");
+        require(block.timestamp >= deadline, "Swap not yet expired");
         uint256 balance = token.balanceOf(address(this));
         require(token.transfer(owner, balance), "Transfer failed");
     }

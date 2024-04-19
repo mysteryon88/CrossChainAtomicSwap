@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
 contract AtomicNativeSwap {
     address public immutable owner;
@@ -27,7 +27,7 @@ contract AtomicNativeSwap {
     }
 
     function withdrawal() external {
-        require(block.timestamp > deadline, "Swap not yet expired");
+        require(block.timestamp >= deadline, "Swap not yet expired");
         payable(owner).transfer(address(this).balance);
     }
 }
