@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-contract NativeSwap {
+contract AtomicNativeSwap {
     address public immutable owner;
     address public immutable otherParty;
     uint public immutable deadline;
@@ -17,10 +17,6 @@ contract NativeSwap {
     }
 
     function confirmSwap(string calldata _key) external {
-        require(
-            msg.sender == otherParty,
-            "Only the other party can confirm the deposit"
-        );
         require(
             hashKey == keccak256(abi.encodePacked(_key)),
             "The key does not match the hash"

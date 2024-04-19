@@ -13,7 +13,7 @@ interface IERC20 {
     function balanceOf(address account) external view returns (uint256);
 }
 
-contract ERC20SwapV1 {
+contract AtomicERC20SwapV1 {
     address public immutable owner;
     address public immutable otherParty;
     uint public immutable deadline;
@@ -43,10 +43,6 @@ contract ERC20SwapV1 {
     }
 
     function confirmSwap(string calldata _key) external {
-        require(
-            msg.sender == otherParty,
-            "Only the other party can confirm the deposit"
-        );
         require(
             hashKey == keccak256(abi.encodePacked(_key)),
             "The key does not match the hash"

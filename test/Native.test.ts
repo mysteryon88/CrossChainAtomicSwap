@@ -26,7 +26,7 @@ describe("Cross-Chain Atomic Swap Native Tokens", function () {
 
     // A created a contract by fixing the time of execution
     // Also the tokens are locked with key A
-    const NativeA = await hre.ethers.getContractFactory("NativeSwap", {
+    const NativeA = await hre.ethers.getContractFactory("AtomicNativeSwap", {
       signer: partyA,
     });
     const nativeA = await NativeA.deploy(partyB.address, deadline, hashKeyA, {
@@ -45,7 +45,7 @@ describe("Cross-Chain Atomic Swap Native Tokens", function () {
 
     // B created a contract by fixing the time of execution
 
-    const NativeB = await hre.ethers.getContractFactory("NativeSwap", {
+    const NativeB = await hre.ethers.getContractFactory("AtomicNativeSwap", {
       signer: partyB,
     });
     const nativeB = await NativeB.deploy(partyA.address, deadline, hashKeyA, {
