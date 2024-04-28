@@ -3,9 +3,9 @@ pragma solidity ^0.8.24;
 
 import "./interfaces/IERC20.sol";
 
-/// @title AtomicERC20Swap
-/// @notice This contract implements an atomic swap for ERC20 tokens between two parties.
-/// @dev The contract uses a cryptographic hash key for a swap, allowing one party to receive tokens if they provide the correct secret key before the deadline.
+/// @title ERC20SwapTransferFrom
+/// @notice This contract facilitates atomic swaps of ERC20 tokens using a secret key for completion.
+/// @dev The contract leverages the ERC20 `transferFrom` method for deposits, allowing token swaps based on a hash key and a deadline.
 contract AtomicERC20Swap {
     /// @notice The owner of the contract who initiates the swap.
     /// @dev Set at deployment and cannot be changed.
@@ -27,6 +27,10 @@ contract AtomicERC20Swap {
     /// @dev The contract holds and transfers tokens of this ERC20 type.
     IERC20 public immutable token;
 
+    /// @notice Amount of tokens for swap
+    /// @dev Used when calling the deposit function
+    uint256 public immutable amount;
+
     /// @notice Emitted when the swap is confirmed with the correct secret key.
     /// @param key The secret key that was used to confirm the swap.
     event Swap(string indexed key);
@@ -39,13 +43,24 @@ contract AtomicERC20Swap {
         address _token,
         address _otherParty,
         uint256 _deadline,
-        bytes32 _hashKey
+        bytes32 _hashKey,
+        uint256 _amount
     ) payable {
         owner = msg.sender;
         token = IERC20(_token);
         otherParty = _otherParty;
         deadline = _deadline;
         hashKey = _hashKey;
+        amount = _amount;
+    }
+
+    /// @notice Deposits ERC20 tokens into the contract from the owner's balance.
+    /// @dev Requires that the owner has approved the contract to transfer the specified `amount` of tokens on their behalf.
+    function deposit() external {
+        require(
+            token.transferFrom(owner, address(this), amount),
+            "Transfer failed"
+        );
     }
 
     /// @notice Confirms the swap and transfers the ERC20 tokens to the other party if the provided key matches the hash key.
@@ -65,7 +80,7 @@ contract AtomicERC20Swap {
     /// @notice Allows the owner to withdraw the tokens if the swap is not completed by the deadline.
     /// @dev Checks if the current time is past the deadline and transfers the token balance from this contract to the owner.
     function withdrawal() external {
-        require(block.timestamp >= deadline, "Swap not yet expired");
+        require(block.timestamp > deadline, "Swap not yet expired");
         uint256 balance = token.balanceOf(address(this));
         require(token.transfer(owner, balance), "Transfer failed");
     }
