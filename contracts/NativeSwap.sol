@@ -30,6 +30,7 @@ contract AtomicNativeSwap is AtomicSwap {
         uint256 _deadline,
         bool _flag
     ) external payable override onlyOwner {
+        require(block.timestamp > deadline, "Swap not yet expired");
         require(msg.value == amount, "Incorrect deposit amount");
         hashKey = _hashKey;
         // The user who initiates the swap sends flag = 1 and his funds will be locked for 24 hours longer,
@@ -50,7 +51,7 @@ contract AtomicNativeSwap is AtomicSwap {
         require(keccak256(abi.encodePacked(_key)) == hashKey, "Invalid key");
         require(block.timestamp <= deadline, "Deadline has passed");
         // Publishing a key
-        emit SwapConfirmed(_key);
+        key = _key;
         // Balance transfer to the caller (otherParty)
         payable(msg.sender).transfer(address(this).balance);
     }

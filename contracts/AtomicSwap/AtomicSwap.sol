@@ -7,6 +7,9 @@ import {Owned} from "./Owned.sol";
 /// @notice Provides access control and time-bound mechanisms for atomic swap transactions.
 /// @dev Inherits from the Owned contract to utilize ownership-based access control.
 abstract contract AtomicSwap is Owned {
+    /// @notice The secret key used to unlock the swap.
+    string public key;
+
     /// @notice One day in timestamp
     /// @dev Used as a time unit for defining deadlines, specifically to protect side B in transactions.
     uint256 constant DAY = 86400;
@@ -19,9 +22,7 @@ abstract contract AtomicSwap is Owned {
     /// @dev Represented as a Unix timestamp, this is used to enforce the time limitation on the swap.
     uint256 public deadline;
 
-    /// @notice Emitted when the swap is confirmed successfully with the correct key.
-    /// @param key The secret key used to unlock the swap.
-    event SwapConfirmed(string indexed key);
+    constructor() {}
 
     /// @notice Allows the owner to deposit assets into the contract for swapping.
     /// @dev This function can only be called by the contract owner.
