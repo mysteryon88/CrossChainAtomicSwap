@@ -22,8 +22,6 @@ abstract contract AtomicSwap is Owned {
     /// @dev Represented as a Unix timestamp, this is used to enforce the time limitation on the swap.
     uint256 public deadline;
 
-    constructor() {}
-
     /// @notice Allows the owner to deposit assets into the contract for swapping.
     /// @dev This function can only be called by the contract owner.
     /// @param _hashKey The keccak256 hash of the secret key required to release the funds.
